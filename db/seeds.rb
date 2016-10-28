@@ -5,3 +5,6 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+60.times do
+  Shoe.create(name: Faker::App.author, price: Faker::Number.decimal(2))
+end
