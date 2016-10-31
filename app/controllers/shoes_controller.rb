@@ -6,11 +6,14 @@ class ShoesController < ApplicationController
 
   def show
     @shoe = Shoe.find(params[:id])
+    #if shipping is NOT same as billing render address partial again
+    # form = params[:shoe]
+
+    if request.xhr?
+      render json: @shoe
+    end
   end
 
-  def pay
-    @shoe = Shoe.find(params[:id])
-  end
 
 
 
