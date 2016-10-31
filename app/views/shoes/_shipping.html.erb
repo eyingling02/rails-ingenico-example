@@ -1,0 +1,23 @@
+<%= form_for :shipping, url: shoes_path(@shoe) do |f| %>
+<h2>Shipping Information</h2>
+
+<div class="form-group">
+  <%= f.text_field :house_Number, class: "txt-group", placeholder: "House Number" %>
+</div>
+<div class="form-group">
+   <%= f.text_field :street, class: "txt-group", placeholder: "Street"%>
+</div>
+<div class="form-group">
+   <%= f.text_field :suite, class: "txt-group", placeholder: "Suite, Apartment, etc."%>
+</div>
+<div class="form-group">
+   <%= f.text_field :city, class: "txt-group", placeholder: "City" %>
+</div>
+<div class="form-group">
+   <%= f.text_field :zip, class: "txt-group", placeholder: "Zip" %>
+</div>
+<div class="form-group">
+   <%= f.text_field :state, class: "txt-group", placeholder: "State" %>
+</div>
+
+<% end %>

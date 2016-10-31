@@ -1,0 +1,40 @@
+<div class='buy-shoe'>
+<%= form_for :payments, url: shoe_path do |f| %>
+  <h2>Contact Information</h2>
+  <div class="form-group">
+    <%= f.text_field :first_name, class: "txt-group", placeholder: "First Name"%>
+  </div>
+  <div class="form-group">
+    <%= f.text_field :last_name, class: "txt-group", placeholder: "Last Name"%>
+  </div>
+  <div class="form-group">
+   <%= f.email_field :email, class: "txt-group", placeholder: "E-mail"%>
+  </div>
+  <div class="form-group">
+     <%= f.telephone_field :phone, class: "txt-group", placeholder: "Phone Number" %>
+  </div>
+  <h2>Billing Information</h2>
+  <div class="form-group">
+    <%= f.text_field :house_number, class: "txt-group", placeholder: "House Number" %>
+  </div>
+  <div class="form-group">
+     <%= f.text_field :street, class: "txt-group", placeholder: "Street"%>
+  </div>
+  <div class="form-group">
+     <%= f.text_field :suite, class: "txt-group", placeholder: "Suite, Apartment, etc."%>
+  </div>
+  <div class="form-group">
+     <%= f.text_field :city, class: "txt-group", placeholder: "City" %>
+  </div>
+  <div class="form-group">
+     <%= f.text_field :zip, class: "txt-group", placeholder: "Zip" %>
+  </div>
+  <div class="form-group">
+     <%= f.text_field :state, class: "txt-group", placeholder: "State" %>
+  </div>
+    <%= render partial:"shipping" %>
+  <div class="form-group">
+     <%= f.submit "Submit Payment", class: "btn btn-default" %>
+  </div>
+<% end %>
+</div>
