@@ -4,6 +4,6 @@ Rails.application.routes.draw do
   resources :shoes
 
   get '/' => 'shoes#index'
-  post '/shoes/:id/pay' => 'shoes#pay'
+  post '/shoes/:id' => 'shoes#show'
 
 end
