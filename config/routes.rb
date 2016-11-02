@@ -5,5 +5,6 @@ Rails.application.routes.draw do
 
   get '/' => 'shoes#index'
   post '/shoes/:id' => 'shoes#show'
+  post '/shoes/:id/payment' => 'shoes#payment'
 
 end
