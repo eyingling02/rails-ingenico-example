@@ -159,7 +159,6 @@ function submitPaymentSameShipping() {
         if (response) {
           console.log(response)
           swal('Success!')
-          swal("/{response.data.payment.status}")
         }
       }
     })
@@ -278,7 +277,6 @@ function submitPaymentDiffShipping() {
           if (response) {
             console.log(response)
             swal('Success!')
-            swal("/{response.data.payment.status}")
           }
         }
       })
