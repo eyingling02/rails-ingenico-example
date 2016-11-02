@@ -1,5 +1,6 @@
 require 'nokogiri'
 require 'open-uri'
+require 'json'
 class ShoesController < ApplicationController
 
   def index
@@ -14,14 +15,21 @@ class ShoesController < ApplicationController
     end
     @image = photo_array
     @shoes = Shoe.all
+
+    if request.xhr?
+      render :'_shipping', layout: false
+    end
+  end
+
+  def payment
+    if request.xhr?
+      p request
+      # render :'/shoes/show', layout: false
+    end
   end
 
   def show
-
     @shoe = Shoe.find(params[:id])
-    #if shipping is NOT same as billing render address partial again
-    # form = params[:shoe]
-
     if request.xhr?
       render :'/shoes/show', layout: false
     end

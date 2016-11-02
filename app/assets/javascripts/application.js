@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require sweetalert2
 //= require_tree .
 
 $(document).ready(function() {
@@ -22,32 +23,169 @@ $(document).ready(function() {
 function buyShoe() {
   $('body').on('click', 'a', function(event) {
     event.preventDefault();
-    console.log('prevent default');
+    var append = $(this).parent();
+    var button = $(this);
+    console.log('shoes')
 
     $.ajax({
       url: $('#shoe-button').attr('href'),
       method: 'GET'
     })
     .done(function(serverData) {
-      $('#shoe-button').hide();
-      $("#shoe-div").append(serverData);
-      submitPayment();
+      $(button).hide();
+      $(append).append(serverData);
+      checkbox();
+      submitPaymentSameShipping();
     })
-
   })
 }
 
-function submitPayment() {
-  $(':submit').on('click', function(event) {
+function checkbox() {
+  $('#ship').on('click', function(event) {
+    event.preventDefault();
+    console.log('up');
+    $.ajax({
+      url: '/',
+      method: 'GET'
+    })
+    .done(function(serverData) {
+      $(".buy-shoe").append(serverData);
+      $('.same-shipping').hide();
+      submitPaymentDiffShipping();
+    })
+  })
+}
+
+function submitPaymentSameShipping() {
+  $('input.btn.btn-default').on('click', function(event) {
+    event.preventDefault();
+    var amount = $($($(this).parent().parent().parent().parent()[0]).children()[1]).text()
+    var name = $($($(this).parent().parent().parent().parent()[0]).children()[0]).text()
+    var money = amount.split('$')[1]
+
+  json = {
+    "order": {
+      "amountOfMoney": {
+        "currencyCode": 'US',
+        "amount": 123
+      },
+      "customer": {
+        "merchantCustomerId": "1234",
+        "personalInformation": {
+          "name": {
+            "firstName": $('#payments_first_name').val(),
+            "surname": $('#payments_last_name').val()
+          }
+        },
+        "companyInformation": {
+        },
+        "locale": "en_GB",
+        "billingAddress": {
+          "street": $('#payments_house_number').val(),
+          "houseNumber": $('#payments_house_number').val(),
+          "additionalInfo": $('#payments_suite').val(),
+          "zip": $('#payments_zip').val(),
+          "city": $('#payments_city').val(),
+          "state": $('#payments_state').val(),
+          "countryCode": "US"
+        },
+        "shippingAddress": {
+          "name": {
+            "firstName": $('#payments_first_name').val(),
+            "surname": $('#payments_last_name').val()
+          },
+            "street": $('#payments_house_number').val(),
+            "houseNumber": $('#payments_house_number').val(),
+            "additionalInfo": $('#payments_suite').val(),
+            "zip": $('#payments_zip').val(),
+            "city": $('#payments_city').val(),
+            "state": $('#payments_state').val(),
+            "countryCode": "US"
+          },
+        "contactDetails": {
+          "emailAddress": $('#payments_email').val(),
+          "phoneNumber": $('#payments_phone').val(),
+          "emailMessageType": "html"
+        }
+      },
+      "references": {
+        "merchantOrderId": 123456,
+        "merchantReference": "AcmeOrder0001",
+        "invoiceData": {
+          "invoiceNumber": "000000123",
+          "invoiceDate": "20140306191500"
+        },
+        "descriptor": "name"
+      },
+      "items": [
+        {
+          "amountOfMoney": {
+            "currencyCode": "US",
+            "amount": 123
+          },
+          "invoiceData": {
+            "nrOfItems": "1",
+            "pricePerItem": 1234,
+            "description": "name"
+          }
+        }
+      ]
+    },
+    "cardPaymentMethodSpecificInput": {
+      "paymentProductId": 1,
+      "skipAuthentication": false,
+      "card": {
+        "cvv": $('#payments_cvv').val(),
+        "cardNumber": $('#payments_card_number').val(),
+        "expiryDate": $('#payments_expiration').val(),
+        "cardholderName": $('#payments_card_holder').val()
+      }
+    }}
+
+    console.log(json);
+    axios.post('https://gift-it-ingenico.herokuapp.com/payments/createPayment', json)
+    .catch(function(error) {
+      if (error.response) {
+        swal({
+        title: "Error",
+        text: "Your payment was not processed. Please try again.",
+        type: "warning",
+        cancelButtonColor: '#DD6B55',
+        cancelButtonText: 'OK',
+        closeOnCancel: true,
+        })
+        .done(() => $('form').hide())
+      } else {
+        if (response) {
+          console.log(response)
+          swal('Success!')
+          swal("/{response.data.payment.status}")
+        }
+      }
+    })
+    .then( function (response) {
+      if (response) {
+        console.log(response)
+        swal("Success!")
+      }
+    })
+    .then(() => $('form').hide())
+  })
+}
+
+
+function submitPaymentDiffShipping() {
+  $('input.btn.btn-default').on('click', function(event) {
     event.preventDefault();
     console.log('prevented this!')
-    var shoeData = $('form').serialize();
-
+    var amount = $($($(this).parent().parent().parent().parent()[0]).children()[1]).text()
+    var name = $($($(this).parent().parent().parent().parent()[0]).children()[0]).text()
+    var money = amount.split('$')[1]
     json = {
       "order": {
         "amountOfMoney": {
-          "currencyCode": "EUR",
-          "amount": 2980
+          "currencyCode": "US",
+          "amount": 1234
         },
         "customer": {
           "merchantCustomerId": "1234",
@@ -63,7 +201,7 @@ function submitPayment() {
           "billingAddress": {
             "street": $('#payments_house_number').val(),
             "houseNumber": $('#payments_house_number').val(),
-            "additionalInfo": "b",
+            "additionalInfo": $('#payments_suite').val(),
             "zip": $('#payments_zip').val(),
             "city": $('#payments_city').val(),
             "state": $('#payments_state').val(),
@@ -95,18 +233,18 @@ function submitPayment() {
             "invoiceNumber": "000000123",
             "invoiceDate": "20140306191500"
           },
-          "descriptor": "Fast and Furry-ous"
+          "descriptor": "while"
         },
         "items": [
           {
             "amountOfMoney": {
               "currencyCode": "EUR",
-              "amount": 480
+              "amount": 1246
             },
             "invoiceData": {
-              "nrOfItems": "12",
-              "pricePerItem": 40,
-              "description": "Aspirin"
+              "nrOfItems": "1",
+              "pricePerItem": 12345,
+              "description": "While"
             }
           }
         ]
@@ -115,19 +253,41 @@ function submitPayment() {
         "paymentProductId": 1,
         "skipAuthentication": false,
         "card": {
-          "cvv": "123",
-          "cardNumber": "4567350000427977",
-          "expiryDate": "1220",
-          "cardholderName": "Wile E. Coyote"
+          "cvv": $('#payments_cvv').val(),
+          "cardNumber": $('#payments_card_number').val(),
+          "expiryDate": $('#payments_expiration').val(),
+          "cardholderName": $('#payments_card_holder').val()
         }
       }}
 
       console.log(json);
 
-  axios.post('https://gift-it-ingenico.herokuapp.com/payments/createPayment', json)
-  .then(response => console.log(response))
-  .then(() => $('form').hide())
-  .then(() => alert(
-    'Success!!'));
+      axios.post('https://gift-it-ingenico.herokuapp.com/payments/createPayment', json)
+      .catch(function(error) {
+        if (error.response) {
+          swal({
+          title: "Error",
+          text: "Your payment was not processed. Please try again.",
+          type: "warning",
+          cancelButtonColor: '#DD6B55',
+          cancelButtonText: 'OK',
+          closeOnCancel: true,
+          })
+          .done(() => $('form').hide())
+        } else {
+          if (response) {
+            console.log(response)
+            swal('Success!')
+            swal("/{response.data.payment.status}")
+          }
+        }
+      })
+      .then( function (response) {
+        if (response) {
+          console.log(response)
+          sweetAlert('Success!')
+        }
+      })
+      .then(() => $('form').hide())
   })
 }

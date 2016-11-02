@@ -1,5 +1,6 @@
 <div id='all-shoes'>
-  <h2 class='form-group'> Select a Shoe! </h2>
+  <h1 class='page-title'>Shoe Shop</h1>
+  <h2 class='large-text'> Select a Shoe! </h2>
   <% if @shoes %>
     <% @shoes.each do |shoe| %>
     <div class='each-shoe'>
@@ -7,8 +8,8 @@
         <%= image_tag "#{@image.sample}" %>
       </div>
       <div id="shoe-div" class="col-sm-9">
-        <h3><%= shoe.name %></h3>
-        <p>$<%= shoe.price %></p>
+        <h3 class='medium-text'><%= shoe.name %></h3>
+        <p class='small-text'>$<%= shoe.price %></p>
         <%= link_to "Buy this Shoe!", "/shoes/#{shoe.id}", :class => "btn btn-primary", :id => "shoe-button" %>
       </div>
     </div>
