@@ -153,7 +153,7 @@ function submitPaymentSameShipping() {
         type: "warning",
         cancelButtonColor: '#DD6B55',
         cancelButtonText: 'OK',
-        closeOnCancel: true,
+        closeOnCancel: true
         })
         .done(function() {
           $('form').hide()
@@ -276,7 +276,7 @@ function submitPaymentDiffShipping() {
           type: "warning",
           cancelButtonColor: '#DD6B55',
           cancelButtonText: 'OK',
-          closeOnCancel: true,
+          closeOnCancel: true
           })
           .done(function() {
              $('form').hide()
