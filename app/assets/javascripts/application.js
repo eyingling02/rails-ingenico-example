@@ -66,7 +66,7 @@ function submitPaymentSameShipping() {
   json = {
     "order": {
       "amountOfMoney": {
-        "currencyCode": 'US',
+        "currencyCode": "EUR",
         "amount": 123
       },
       "customer": {
@@ -120,7 +120,7 @@ function submitPaymentSameShipping() {
       "items": [
         {
           "amountOfMoney": {
-            "currencyCode": "US",
+            "currencyCode": "EUR",
             "amount": 123
           },
           "invoiceData": {
@@ -146,6 +146,7 @@ function submitPaymentSameShipping() {
     axios.post('https://gift-it-ingenico.herokuapp.com/payments/createPayment', json)
     .catch(function(error) {
       if (error.response) {
+        console.log(error)
         swal({
         title: "Error",
         text: "Your payment was not processed. Please try again.",
@@ -154,7 +155,9 @@ function submitPaymentSameShipping() {
         cancelButtonText: 'OK',
         closeOnCancel: true,
         })
-        .done(() => $('form').hide())
+        .done(function() {
+          $('form').hide()
+        })
       } else {
         if (response) {
           console.log(response)
@@ -163,13 +166,15 @@ function submitPaymentSameShipping() {
         }
       }
     })
-    .then( function (response) {
+    .then(function(response) {
       if (response) {
         console.log(response)
         swal("Success!")
       }
     })
-    .then(() => $('form').hide())
+    .then(function() {
+      $('form').hide()
+    })
   })
 }
 
@@ -184,7 +189,7 @@ function submitPaymentDiffShipping() {
     json = {
       "order": {
         "amountOfMoney": {
-          "currencyCode": "US",
+          "currencyCode": "EUR",
           "amount": 1234
         },
         "customer": {
@@ -273,7 +278,9 @@ function submitPaymentDiffShipping() {
           cancelButtonText: 'OK',
           closeOnCancel: true,
           })
-          .done(() => $('form').hide())
+          .done(function() {
+             $('form').hide()
+          })
         } else {
           if (response) {
             console.log(response)
@@ -282,12 +289,14 @@ function submitPaymentDiffShipping() {
           }
         }
       })
-      .then( function (response) {
+      .then(function(response) {
         if (response) {
           console.log(response)
           sweetAlert('Success!')
         }
       })
-      .then(() => $('form').hide())
+      .then(function() {
+         $('form').hide()
+      })
   })
 }
