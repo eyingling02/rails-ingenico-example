@@ -1,0 +1,60 @@
+<%= form_for :payments, url: shoe_path, remote: true, :html => {:id => "payment-form"}, method: :post do |f| %>
+<div class='buy-shoe'>
+  <h2>Contact Information</h2>
+  <div class="form-group">
+    <%= f.text_field :first_name, class: "txt-group", placeholder: "First Name"%>
+  </div>
+  <div class="form-group">
+    <%= f.text_field :last_name, class: "txt-group", placeholder: "Last Name"%>
+  </div>
+  <div class="form-group">
+   <%= f.email_field :email, class: "txt-group", placeholder: "E-mail"%>
+  </div>
+  <div class="form-group">
+     <%= f.telephone_field :phone, class: "txt-group", placeholder: "Phone Number" %>
+  </div>
+  <h2>Card Information</h2>
+  <div class="form-group">
+    <%= f.text_field :card_holder, class: "txt-group", placeholder: "Card Holder Name" %>
+  </div>
+  <div class="form-group">
+    <%= f.text_field :card_number, class: "txt-group", placeholder: "Card Number" %>
+  </div>
+  <div class="form-group">
+    <%= f.text_field :expiration, class: "txt-group", placeholder: "Expiration Date" %>
+  </div>
+  <div class="form-group">
+    <%= f.text_field :cvv, class: "txt-group", placeholder: "CVV" %>
+  </div>
+  <h2>Billing Information</h2>
+  <div class="form-group">
+    <%= f.text_field :house_number, class: "txt-group", placeholder: "House Number" %>
+  </div>
+  <div class="form-group">
+     <%= f.text_field :street, class: "txt-group", placeholder: "Street"%>
+  </div>
+  <div class="form-group">
+     <%= f.text_field :suite, class: "txt-group", placeholder: "Suite, Apartment, etc."%>
+  </div>
+  <div class="form-group">
+     <%= f.text_field :city, class: "txt-group", placeholder: "City" %>
+  </div>
+  <div class="form-group">
+     <%= f.text_field :zip, class: "txt-group", placeholder: "Zip" %>
+  </div>
+  <div class="form-group">
+     <%= f.text_field :state, class: "txt-group", placeholder: "State" %>
+  </div>
+  <div class='same-shipping'>
+    <div class="shipping-block">
+      <%= check_box_tag 'ship' %>
+    </div>
+    <div class="shipping-block1">
+      <h4>Check here if your shipping information is different from your billing information</h4>
+    </div>
+  </div>
+</div>
+  <div class="form-group">
+     <%= f.submit "Submit Payment", class: "btn btn-default" %>
+  </div>
+<% end %>
