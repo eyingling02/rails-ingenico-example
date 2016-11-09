@@ -16,7 +16,10 @@
  */
  @import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,200,700");
 
-
+img {
+  display: block;
+  margin: auto;
+}
 div.each-shoe {
   margin-bottom: 20px;
 }

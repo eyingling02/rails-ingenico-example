@@ -1,4 +1,4 @@
-<%= form_for :payments, url: shoe_path do |f| %>
+<%= form_for :payments, url: shoe_path, remote: true, :html => {:id => "payment-form"}, method: :post do |f| %>
 <div class='buy-shoe'>
   <h2>Contact Information</h2>
   <div class="form-group">

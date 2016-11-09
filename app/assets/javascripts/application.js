@@ -15,7 +15,7 @@
 //= require sweetalert2
 //= require_tree .
 
-$(document).ready(function() {
+$(document).ready(function () {
   console.log('READY for action');
   buyShoe();
 })
@@ -35,7 +35,7 @@ function buyShoe() {
       $(button).hide();
       $(append).append(serverData);
       checkbox();
-      submitPaymentSameShipping();
+      submitPayment();
     })
   })
 }
@@ -43,7 +43,6 @@ function buyShoe() {
 function checkbox() {
   $('#ship').on('click', function(event) {
     event.preventDefault();
-    console.log('up');
     $.ajax({
       url: '/',
       method: 'GET'
@@ -51,252 +50,62 @@ function checkbox() {
     .done(function(serverData) {
       $(".buy-shoe").append(serverData);
       $('.same-shipping').hide();
-      submitPaymentDiffShipping();
+      submitPayment();
     })
   })
 }
 
-function submitPaymentSameShipping() {
+function submitPayment() {
   $('input.btn.btn-default').on('click', function(event) {
     event.preventDefault();
-    var amount = $($($(this).parent().parent().parent().parent()[0]).children()[1]).text()
-    var name = $($($(this).parent().parent().parent().parent()[0]).children()[0]).text()
-    var money = amount.split('$')[1]
+    var address = $($(this).parent().parent()[0]).attr('action')
+    data = $('form').serialize()
 
-  json = {
-    "order": {
-      "amountOfMoney": {
-        "currencyCode": "EUR",
-        "amount": 123
-      },
-      "customer": {
-        "merchantCustomerId": "1234",
-        "personalInformation": {
-          "name": {
-            "firstName": $('#payments_first_name').val(),
-            "surname": $('#payments_last_name').val()
-          }
-        },
-        "companyInformation": {
-        },
-        "locale": "en_GB",
-        "billingAddress": {
-          "street": $('#payments_house_number').val(),
-          "houseNumber": $('#payments_house_number').val(),
-          "additionalInfo": $('#payments_suite').val(),
-          "zip": $('#payments_zip').val(),
-          "city": $('#payments_city').val(),
-          "state": $('#payments_state').val(),
-          "countryCode": "US"
-        },
-        "shippingAddress": {
-          "name": {
-            "firstName": $('#payments_first_name').val(),
-            "surname": $('#payments_last_name').val()
-          },
-            "street": $('#payments_house_number').val(),
-            "houseNumber": $('#payments_house_number').val(),
-            "additionalInfo": $('#payments_suite').val(),
-            "zip": $('#payments_zip').val(),
-            "city": $('#payments_city').val(),
-            "state": $('#payments_state').val(),
-            "countryCode": "US"
-          },
-        "contactDetails": {
-          "emailAddress": $('#payments_email').val(),
-          "phoneNumber": $('#payments_phone').val(),
-          "emailMessageType": "html"
-        }
-      },
-      "references": {
-        "merchantOrderId": 123456,
-        "merchantReference": "AcmeOrder0001",
-        "invoiceData": {
-          "invoiceNumber": "000000123",
-          "invoiceDate": "20140306191500"
-        },
-        "descriptor": "name"
-      },
-      "items": [
-        {
-          "amountOfMoney": {
-            "currencyCode": "EUR",
-            "amount": 123
-          },
-          "invoiceData": {
-            "nrOfItems": "1",
-            "pricePerItem": 1234,
-            "description": "name"
-          }
-        }
-      ]
-    },
-    "cardPaymentMethodSpecificInput": {
-      "paymentProductId": 1,
-      "skipAuthentication": false,
-      "card": {
-        "cvv": $('#payments_cvv').val(),
-        "cardNumber": $('#payments_card_number').val(),
-        "expiryDate": $('#payments_expiration').val(),
-        "cardholderName": $('#payments_card_holder').val()
-      }
-    }}
-
-    console.log(json);
-    axios.post('https://gift-it-ingenico.herokuapp.com/payments/createPayment', json)
-    .catch(function(error) {
-      if (error.response) {
-        console.log(error)
-        swal({
-        title: "Error",
-        text: "Your payment was not processed. Please try again.",
-        type: "warning",
-        cancelButtonColor: '#DD6B55',
-        cancelButtonText: 'OK',
-        closeOnCancel: true
-        })
-        .done(function() {
-          $('form').hide()
-        })
-      } else {
-        if (response) {
-          console.log(response)
-          swal('Success!')
-          swal("/{response.data.payment.status}")
-        }
-      }
+    $.ajax({
+      url: 'https://shoes-shop.herokuapp.com'+address+'/payment',
+      type: "POST",
+      dataType: "json",
+      data: data
     })
-    .then(function(response) {
-      if (response) {
+    .done(function(response) {
+      if (response.errorId) {
         console.log(response)
-        swal("Success!")
+        var errorStatus = String((response.errors[0]).httpStatusCode)
+        swal({
+          title: "Error",
+          text: "Your payment was not processed. Please try again. Error http status #" + errorStatus,
+          type: "warning",
+          cancelButtonColor: '#DD6B55',
+          cancelButtonText: 'OK',
+          closeOnCancel: true,
+          timer: 2000
+        }).then(function(dismiss) {})
+      } else {
+        console.log(response)
+        swal({
+          title: "Success!",
+          text: "Your payment is being processed. You will get a message at completion.",
+          type: 'success',
+          cancelButtonColor: '#DD6B55',
+          cancelButtonText: 'OK',
+          closeOnCancel: true
+        })
       }
     })
-    .then(function() {
-      $('form').hide()
-    })
-  })
-}
-
-
-function submitPaymentDiffShipping() {
-  $('input.btn.btn-default').on('click', function(event) {
-    event.preventDefault();
-    console.log('prevented this!')
-    var amount = $($($(this).parent().parent().parent().parent()[0]).children()[1]).text()
-    var name = $($($(this).parent().parent().parent().parent()[0]).children()[0]).text()
-    var money = amount.split('$')[1]
-    json = {
-      "order": {
-        "amountOfMoney": {
-          "currencyCode": "EUR",
-          "amount": 1234
-        },
-        "customer": {
-          "merchantCustomerId": "1234",
-          "personalInformation": {
-            "name": {
-              "firstName": $('#payments_first_name').val(),
-              "surname": $('#payments_last_name').val()
-            }
-          },
-          "companyInformation": {
-          },
-          "locale": "en_GB",
-          "billingAddress": {
-            "street": $('#payments_house_number').val(),
-            "houseNumber": $('#payments_house_number').val(),
-            "additionalInfo": $('#payments_suite').val(),
-            "zip": $('#payments_zip').val(),
-            "city": $('#payments_city').val(),
-            "state": $('#payments_state').val(),
-            "countryCode": "US"
-          },
-          "shippingAddress": {
-            "name": {
-              "firstName": $('#payments_first_name').val(),
-              "surname": $('#payments_last_name').val()
-            },
-              "street": $('#shipping_street').val(),
-              "houseNumber": $('#shipping_house_number').val(),
-              "additionalInfo": $('#shipping_suite').val(),
-              "zip": $('#shipping_zip').val(),
-              "city": $('#shipping_city').val(),
-              "state": $('#shipping_state').val(),
-              "countryCode": "US"
-            },
-          "contactDetails": {
-            "emailAddress": $('#payments_email').val(),
-            "phoneNumber": $('#payments_phone').val(),
-            "emailMessageType": "html"
-          }
-        },
-        "references": {
-          "merchantOrderId": 123456,
-          "merchantReference": "AcmeOrder0001",
-          "invoiceData": {
-            "invoiceNumber": "000000123",
-            "invoiceDate": "20140306191500"
-          },
-          "descriptor": "while"
-        },
-        "items": [
-          {
-            "amountOfMoney": {
-              "currencyCode": "EUR",
-              "amount": 1246
-            },
-            "invoiceData": {
-              "nrOfItems": "1",
-              "pricePerItem": 12345,
-              "description": "While"
-            }
-          }
-        ]
-      },
-      "cardPaymentMethodSpecificInput": {
-        "paymentProductId": 1,
-        "skipAuthentication": false,
-        "card": {
-          "cvv": $('#payments_cvv').val(),
-          "cardNumber": $('#payments_card_number').val(),
-          "expiryDate": $('#payments_expiration').val(),
-          "cardholderName": $('#payments_card_holder').val()
-        }
-      }}
-
-      console.log(json);
-
-      axios.post('https://gift-it-ingenico.herokuapp.com/payments/createPayment', json)
-      .catch(function(error) {
-        if (error.response) {
-          swal({
+    .fail(function(response) {
+      console.log(response)
+        swal({
           title: "Error",
-          text: "Your payment was not processed. Please try again.",
+          text: "Your payment was not processed. Please try again. ",
           type: "warning",
           cancelButtonColor: '#DD6B55',
           cancelButtonText: 'OK',
           closeOnCancel: true
-          })
-          .done(function() {
-             $('form').hide()
-          })
-        } else {
-          if (response) {
-            console.log(response)
-            swal('Success!')
-            swal("/{response.data.payment.status}")
-          }
-        }
+        })
       })
-      .then(function(response) {
-        if (response) {
-          console.log(response)
-          sweetAlert('Success!')
-        }
-      })
-      .then(function() {
-         $('form').hide()
-      })
+    .always(function() {
+       $('form').hide()
+       $('#shoe-div a').show('#shoe-button')
+    })
   })
 }
